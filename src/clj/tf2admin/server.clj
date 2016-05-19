@@ -1,16 +1,17 @@
 (ns tf2admin.server
-  (:require [org.httpkit.server :refer [run-server]])
+  (:require [org.httpkit.server :refer [run-server]]
+            [compojure.core :refer [GET defroutes]]
+            [compojure.route :refer [resources not-found]]
+            [ring.util.response :refer [file-response]])
   (:gen-class))
 
-(def http-handler
-  (cond-> routes
-    is-dev? wrap-logging
-    true (wrap-transit-params {:opts {}})
-    true (wrap-transit-response {:encoding :json, :opts {}})
-    true (wrap-defaults api-defaults)
-    true ignore-trailing-slash
-    is-dev? reload/wrap-reload
-    true wrap-browser-caching-opts
-    true wrap-gzip))
+(defroutes routes
+  (resources "/")
+  (GET "/" [] (file-response "index.html" {:root "resources/public"}))
+  (not-found "404"))
 
-(run-server #'http-handler {:port port :join? false})
+(def http-handler
+  (cond-> routes))
+
+(defn -main [& [port]]
+  (run-server #'http-handler {:port 8081 :join? false}))

@@ -3,9 +3,12 @@
                  [org.clojure/clojurescript "1.8.51"]
                  [reagent "0.5.1"]
                  [re-frame "0.7.0"]
-                 [com.domkm/silk "0.1.2"]
+                 [secretary "1.2.3"]
                  [garden "1.3.2"]
-                 [http-kit "2.2.0-alpha1"]]
+                 [http-kit "2.2.0-alpha1"]
+                 [compojure "1.5.0"]
+                 [ring "1.4.0"]
+                 ]
 
   :min-lein-version "2.5.3"
 
@@ -13,6 +16,8 @@
 
   :plugins [[lein-cljsbuild "1.1.3"]
             [lein-garden "0.2.6"]]
+
+  :main tf2admin.server
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"
