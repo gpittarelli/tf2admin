@@ -8,12 +8,14 @@
 
 (def default-db
   {:name "re-frame"})
+
 (re-frame/register-handler :initialize-db (fn  [_ _] default-db))
 
 (re-frame/register-handler
  :send-command
- (fn [db [_ active-panel]]
-   (assoc db :active-panel active-panel)))
+ (fn [db e]
+   (println "send command" e)
+   db))
 
 (re-frame/register-handler
  :set-active-panel

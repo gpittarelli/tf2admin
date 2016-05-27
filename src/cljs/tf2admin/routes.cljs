@@ -21,8 +21,8 @@
   (defroute "/" []
     (re-frame/dispatch [:set-active-panel :home-panel]))
 
-  (defroute "/about" []
-    (re-frame/dispatch [:set-active-panel :about-panel]))
+  (defroute "/rcon" []
+    (re-frame/dispatch [:set-active-panel :rcon-panel]))
 
 
   ;; --------------------
