@@ -1,22 +1,36 @@
 (ns tf2admin.views
-  (:require [re-frame.core :as re-frame]
+  (:require [reagent.core :as r]
+            [re-frame.core :as re-frame :refer [dispatch]]
             [tf2admin.components.terminal :refer [terminal]]))
+
 ;; home
 
 (defn home-panel []
-  (let [name (re-frame/subscribe [:name])]
+  (let [name (re-frame/subscribe [:name])
+        address (r/atom "")
+        password (r/atom "")]
     (fn []
-      [:div (str "Hello from " @name ". This is the Home Page.")
-       [:div [:a {:href "#/rcon"} "go to Rcon Terminal"]]])))
+      [:div
+       (str "Hello from " @name ". This is the Home Page.")
+       [:input.address {:type "text"
+                        :value @address
+                        :on-change #(reset! address (-> % .-target .-value))}]
+       [:input.password {:type "password"
+                         :value @password
+                         :on-change #(reset! password (-> % .-target .-value))}]
+       [:button {:on-click #(dispatch [:connect @address @password])}]])))
 
 
 ;; rcon
 
 (defn rcon-panel []
-  [:div.rcon-page
-   "Rcon!"
-   [terminal "asdf" #(re-frame/dispatch [:send-command %])]
-   [:a.quit {:href "#/"} "Go back"]])
+  (let [address (re-frame/subscribe [:address])
+        password (re-frame/subscribe [:password])]
+    (fn []
+      [:div.rcon-page
+       (str "Rcon to " @address " with " @password)
+       [terminal "asdf" #(dispatch [:send-command %])]
+       [:a.quit {:href "#/"} "Go back"]])))
 
 ;; main
 
@@ -27,5 +41,4 @@
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
-    (fn []
-      [panels @active-panel])))
+    #(-> [panels @active-panel])))
