@@ -33,25 +33,10 @@
    (assoc db :active-panel active-panel)))
 
 ;; Subscriptions
-(re-frame/register-sub
- :name
- (fn [db]
-   (reaction (:name @db))))
-
-(re-frame/register-sub
- :address
- (fn [db]
-   (reaction (:address @db))))
-
-(re-frame/register-sub
- :password
- (fn [db]
-   (reaction (:password @db))))
-
-(re-frame/register-sub
- :active-panel
- (fn [db _]
-   (reaction (:active-panel @db))))
+(re-frame/register-sub :name (fn [db] (reaction (:name @db))))
+(re-frame/register-sub :address (fn [db] (reaction (:address @db))))
+(re-frame/register-sub :password (fn [db] (reaction (:password @db))))
+(re-frame/register-sub :active-panel (fn [db _] (reaction (:active-panel @db))))
 
 
 (when config/debug?
