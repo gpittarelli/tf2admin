@@ -1,7 +1,8 @@
 (ns tf2admin.views
   (:require [reagent.core :as r]
             [re-frame.core :as re-frame :refer [dispatch]]
-            [tf2admin.components.terminal :refer [terminal]]))
+            [tf2admin.components.terminal :refer [terminal]]
+            [tf2admin.websocket :as ws]))
 
 ;; home
 
@@ -25,7 +26,9 @@
 
 (defn rcon-panel []
   (let [address (re-frame/subscribe [:address])
-        password (re-frame/subscribe [:password])]
+        password (re-frame/subscribe [:password])
+        conn (ws/listen @address)
+        ]
     (fn []
       [:div.rcon-page
        (str "Rcon to " @address " with " @password)
@@ -37,8 +40,8 @@
 (defmulti panels identity)
 (defmethod panels :home-panel [] [home-panel])
 (defmethod panels :rcon-panel [] [rcon-panel])
-(defmethod panels :default [] [:div#default "asdf"])
+(defmethod panels :default [] [:div#default "404"])
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
-    #(-> [panels @active-panel])))
+    (fn [] [panels @active-panel])))
