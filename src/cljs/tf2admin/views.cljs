@@ -27,12 +27,14 @@
 (defn rcon-panel []
   (let [address (re-frame/subscribe [:address])
         password (re-frame/subscribe [:password])
-        conn (ws/listen @address)
+        addr (str "/rcon?" @address)
+        conn  (ws/listen addr {:host "localhost:8081"
+                               :params {:url @address :password @password}})
         ]
     (fn []
       [:div.rcon-page
        (str "Rcon to " @address " with " @password)
-       [terminal "asdf" #(dispatch [:send-command %])]
+       [terminal "asdf" #(ws/send addr [:tf2admin.rcon/send-command %])]
        [:a.quit {:href "#/"} "Go back"]])))
 
 ;; main
