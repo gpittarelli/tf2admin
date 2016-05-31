@@ -25,22 +25,25 @@
 
 (def connections (atom {}))
 
-(go-loop []
-  (let [{:keys [event id ?data client-id ring-req] :as e} (<! ch-chsk)]
-    (println "msg: " id ?data client-id)
-    (case id
-      :chsk/uidport-open
-      (do
-        (swap! connections update client-id
-               (rcon/connect (:url ?data) (:password ?data)))
-        (println "Conn map" @connections))
+(def main-loop
+  (go-loop []
+    (let [{:keys [event id ?data client-id ring-req] :as e} (<! ch-chsk)]
+      (println "msg: " id ?data client-id)
+      (case id
+        :chsk/uidport-open
+        (do
+          (swap! connections update client-id
+                 (rcon/connect (:url ?data) 27015 (:password ?data)))
+          (println "Conn map" @connections))
 
-      :tf2admin.rcon/send-command
-      (println "send" ?data "to" (:params ring-req))
-;;      (rcon/exec @)
+        :tf2admin.rcon/send-command
+        (println "send" ?data "to" (:params ring-req))
+        ;;      (rcon/exec @)
 
-      (println "Unhandled message type" id ?data)))
-  (recur))
+        (println "Unhandled message type" id ?data)))
+    (recur)))
+
+(go (println "main loop ended" (<! main-loop)))
 
 (defroutes routes
   (GET "/rcon" req (ring-ajax-get-or-ws-handshake req))
