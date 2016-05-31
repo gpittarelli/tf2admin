@@ -13,10 +13,14 @@
     (fn []
       [:div
        (str "Hello from " @name ". This is the Home Page.")
+       [:label {:for "address"} "Address"]
        [:input.address {:type "text"
+                        :name "address"
                         :value @address
                         :on-change #(reset! address (-> % .-target .-value))}]
+       [:label {:for "password"} "Password"]
        [:input.password {:type "password"
+                         :name "password"
                          :value @password
                          :on-change #(reset! password (-> % .-target .-value))}]
        [:button {:on-click #(dispatch [:connect @address @password])}]])))
