@@ -1,10 +1,21 @@
 (ns tf2admin.views
-  (:require [reagent.core :as r]
-            [re-frame.core :as re-frame :refer [dispatch]]
-            [tf2admin.components.terminal :refer [terminal]]
-            [tf2admin.websocket :as ws]))
+  (:require
+   [clojure.string :as str]
+   [reagent.core :as r]
+   [re-frame.core :as re-frame :refer [dispatch]]
+   [tf2admin.components.terminal :refer [terminal]]
+   [tf2admin.websocket :as ws]))
 
 ;; home
+
+(defn text-input [& {:keys [name value on-change]}]
+  [:div
+   [:label {:for name} (str/capitalize name)]
+   [:input {:class name
+            :type "text"
+            :name name
+            :value value
+            :on-change on-change}]])
 
 (defn home-panel []
   (let [name (re-frame/subscribe [:name])
@@ -13,16 +24,12 @@
     (fn []
       [:div
        (str "Hello from " @name ". This is the Home Page.")
-       [:label {:for "address"} "Address"]
-       [:input.address {:type "text"
-                        :name "address"
-                        :value @address
-                        :on-change #(reset! address (-> % .-target .-value))}]
-       [:label {:for "password"} "Password"]
-       [:input.password {:type "password"
-                         :name "password"
-                         :value @password
-                         :on-change #(reset! password (-> % .-target .-value))}]
+       (text-input :name "address"
+                   :address @address
+                   :on-change #(reset! address (-> % .-target .-value)))
+       (text-input :name "password"
+                   :address @password
+                   :on-change #(reset! password (-> % .-target .-value)))
        [:button {:on-click #(dispatch [:connect @address @password])}]])))
 
 
