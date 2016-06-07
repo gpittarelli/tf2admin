@@ -17,7 +17,8 @@
   :source-paths ["src/clj"]
 
   :plugins [[lein-cljsbuild "1.1.3"]
-            [lein-garden "0.2.6"]]
+            [lein-garden "0.2.6"]
+            ]
 
   :main tf2admin.server
 
@@ -25,14 +26,16 @@
                                     "test/js"
                                     "resources/public/css"]
 
-  :figwheel {:css-dirs     ["resources/public/css"] }
+  :figwheel {:css-dirs     ["resources/public/css"]}
 
-  :garden {:builds [{:id           "screen"
-                     :source-paths ["src/clj"]
-                     :stylesheet   tf2admin.css/screen
-                     :compiler     {:output-to     "resources/public/css/screen.css"
-                                    :pretty-print? true}}]}
-    :cljsbuild
+  :garden
+  {:builds [{:id           "screen"
+             :source-paths ["src/clj"]
+             :stylesheet   tf2admin.css/screen
+             :compiler     {:output-to     "resources/public/css/screen.css"
+                            :pretty-print? true}}]}
+
+  :cljsbuild
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
